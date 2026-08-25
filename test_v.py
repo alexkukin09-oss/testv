@@ -6,7 +6,7 @@ from all_scenes import GameMenu, MainMenu, SettingsMenu
 pg.init()
 
 #персонажи: концентрированная такса, всадники на лосях, чиловый скелет, радиактивный рыцарь
-
+# git
 window = pg.display.set_mode((all_scenes.width, all_scenes.height))
 scene = MainMenu(all_scenes.width, all_scenes.height)
 pg.display.set_caption('Game')
