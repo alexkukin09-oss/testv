@@ -150,7 +150,7 @@ class GameMoveButton(GameButton):
             img = self.img_activate if self.activate else self.img
             scale = pg.transform.scale(self.img,
                                            (new_rect.width,
-                                            new_rect.height))
+                                            new_rect.height)) # img_unactivate на основной сцене
             scene.blit(scale, new_rect)
         else:
             color = self.color_activate if self.activate else self.color
