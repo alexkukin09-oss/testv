@@ -106,7 +106,7 @@ class SettingsMenu(Scene):
         self.main_bg = load_img('assets/img_bg3.png',
                                 (self.width,
                                  self.height))
-        self.rec_bg = load_img('assets/img_bg.png',
+        self.rec_bg = load_img('assets/Setting_bg.png',
                                (self.r_width,
                                 self.r_height))
         self.rect_recurse_scene = pg.Rect(100,
@@ -128,7 +128,6 @@ class SettingsMenu(Scene):
         self.btn_small_res = GameMoveButton(200, 200, 140, 40,
                                             img = 'assets/music_way.png',
                                             img_activate = 'assets/polzynok_unactivate.png')
-        print(self.btn_small_res.img, self.btn_small_res.img_activate)
         self.btn_medium_res = GameButton(400,  200, 140, 40, text='1024x768')
         self.btn_fullscreen = GameButton(600,  200, 140, 40, text='full')
         self.music_slider = Slider(self.width,
@@ -351,3 +350,7 @@ class SettingsMenu(Scene):
             self.btn_exit.img = load_img(self.btn_exit.img_path, (exit_res, exit_res))
             self.btn_exit.img_activate = load_img(self.btn_exit.img_activate_path, (exit_res, exit_res))
         self.btn_exit.update(self.mouse)
+        
+class Scenarios(Scene):
+    def __init__(self, width, height):
+        pass

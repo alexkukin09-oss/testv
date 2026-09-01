@@ -40,6 +40,6 @@ class GameSound:
             return snd
             
     def play_sound(self, name):
-        name.play()
+        name.play(maxtime = 450)
         
 audio_manager = GameSound()

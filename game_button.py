@@ -136,14 +136,12 @@ class GameMoveButton(GameButton):
         self.y = y
         
     def draw(self, scene, font, scalew = 1, scaleh = 1):
-        print(self.rect.width)
         if self.activate:
             new_w = scalew * self.rect.width
             new_h = scaleh * self.rect.height
             self.rect.width = new_w
-            print(self.rect.width)
             self.rect.height = new_h
-            new_rect = pg.Rect(self.x, self.y, new_w, new_h)
+            new_rect = pg.Rect(self.rect.x, self.rect.y, new_w, new_h)
         else:
             new_rect = self.rect
         if self.img and self.img_activate:
