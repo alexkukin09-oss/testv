@@ -86,8 +86,7 @@ class GameMenu(Scene):
         if event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.btn_new_game.collidepoint(self.mouse):
-                    print('New Game')
-                    return 'new_game'
+                    return 'scenarios'
                 elif self.btn_load_game.collidepoint(self.mouse):
                     print('Load Game')
                     return 'load_game'
@@ -352,5 +351,42 @@ class SettingsMenu(Scene):
         self.btn_exit.update(self.mouse)
         
 class Scenarios(Scene):
+    castles = [{'title':'Necrptozis',
+                'heroes':['Vidomina', 'Straker'],
+                'bonus':['gold', 'resources', 'artifact']},
+               {'title':'Sky castle',
+                'heroes':['Gabriel', 'Azazel'],
+                'bonus':['gold', 'resources', 'artifact']}]
+    difficulty = ('easy', 'normal', 'hard')
     def __init__(self, width, height):
-        pass
+        super().__init__(width, height)
+        self.width = width
+        self.height = height
+        self.main_bg = load_img('assets/scenarios_bg.png',
+                                (self.width,
+                                 self.height))
+        self.rect_list = pg.Rect(100, 100, 400, 600)
+        self.btn_exit = GameButton(self.width - 200,
+                                   self.height - 200,
+                                   150,
+                                   150,
+                                   img = 'assets/exit_button_unactivate.png',
+                                   img_activate = 'assets/exit_button_activate.png')
+        
+    def hendler(self, event):
+        super().hendler(event)
+        
+        if self.btn_exit.is_clicked(event):
+            return 'MainMenu'
+        
+    def draw(self, scene):
+        super().draw(scene)
+        
+        if self.main_bg:
+            scene.blit(self.main_bg, (0, 0))
+        else:
+            scene.fill((0, 255, 0))
+        scene.blit(load_img('assets/setting_bg.png',
+                                (400,
+                                600)), self.rect_list)
+        self.btn_exit.draw(scene, self.font)

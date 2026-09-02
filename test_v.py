@@ -2,10 +2,10 @@ import pygame as pg
 import sys
 import os
 import all_scenes
-from all_scenes import GameMenu, MainMenu, SettingsMenu
+from all_scenes import GameMenu, MainMenu, SettingsMenu, Scenarios
 pg.init()
 
-#персонажи: концентрированная такса, всадники на лосях, чиловый скелет, радиактивный рыцарь
+#персонажи: концентрированная такса, всадники на лосях, чиловый скелет, радиактивный рыцарь, шахматы
 # git
 window = pg.display.set_mode((all_scenes.width, all_scenes.height))
 scene = MainMenu(all_scenes.width, all_scenes.height)
@@ -30,6 +30,9 @@ while run:
             
         elif result == 'settings':
             scene = SettingsMenu(all_scenes.width, all_scenes.height)
+            
+        elif result == 'scenarios':
+            scene = Scenarios(all_scenes.width, all_scenes.height)
             
         elif result == 'apply_res':
             if all_scenes.IS_FULLSCREEN:
