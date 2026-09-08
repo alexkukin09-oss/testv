@@ -11,6 +11,7 @@ class Scene:
         self.scene = pg.display.set_mode((width, height))
         self.font = pg.font.SysFont('Roboto', 30)
         self.bg = None
+        self.btn_exit = GameButton(0, 0, 1, 1)
         
     @property
     def mouse(self):
@@ -22,7 +23,7 @@ class Scene:
             sys.exit()
         
     def update(self):
-        pass
+        self.btn_exit.update(self.mouse)
     
     def draw(self, scene):
         if self.bg:

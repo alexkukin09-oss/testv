@@ -51,14 +51,14 @@ class GameMenu(Scene):
         self.bg = load_img('assets/img_bg3.png', (width, height))
         self.btn_new_game = pg.Rect(width-200, height-400, 100, 50)
         self.btn_load_game = pg.Rect(width-200, height-350, 100, 50)
-        self.btn_return_game = pg.Rect(width-200, height-300, 100, 50)
+        self.btn_exit = pg.Rect(width-200, height-300, 100, 50)
         self.color_new_game = (200, 200, 200)
         self.color_load_game = (200, 200, 200)
         self.color_return_game = (255, 200, 100)
         self.start_music('sound/fon_music_2.mp3')
         
     def update(self):
-        super().update()
+#         super().update()
         if self.btn_new_game.collidepoint(self.mouse):
             self.color_new_game = (100, 100, 100)
         else:
@@ -67,7 +67,7 @@ class GameMenu(Scene):
             self.color_load_game = (150, 150, 150)
         else:
             self.color_load_game = (200, 200, 200)
-        if self.btn_return_game.collidepoint(self.mouse):
+        if self.btn_exit.collidepoint(self.mouse):
             self.color_return_game = (205, 255, 205)
         else:
             self.color_return_game = (255, 200, 100)
@@ -76,10 +76,10 @@ class GameMenu(Scene):
         super().draw(scene)
         pg.draw.rect(scene, self.color_new_game, self.btn_new_game)
         pg.draw.rect(scene, self.color_load_game, self.btn_load_game)
-        pg.draw.rect(scene, self.color_return_game, self.btn_return_game)
+        pg.draw.rect(scene, self.color_return_game, self.btn_exit)
         scene.blit(self.font.render('New game', True, (0, 0, 0)), (self.btn_new_game.x, self.btn_new_game.y))
         scene.blit(self.font.render('Load game', True, (0, 0, 0)), (self.btn_load_game.x, self.btn_load_game.y))
-        scene.blit(self.font.render('Back', True, (0, 0, 0)), (self.btn_return_game.x, self.btn_return_game.y))
+        scene.blit(self.font.render('Back', True, (0, 0, 0)), (self.btn_exit.x, self.btn_exit.y))
     
     def hendler(self, event):
         super().hendler(event)
@@ -90,7 +90,7 @@ class GameMenu(Scene):
                 elif self.btn_load_game.collidepoint(self.mouse):
                     print('Load Game')
                     return 'load_game'
-                elif self.btn_return_game.collidepoint(self.mouse):
+                elif self.btn_exit.collidepoint(self.mouse):
                     print('Back')
                     return 'MainMenu'
                 
@@ -188,7 +188,7 @@ class SettingsMenu(Scene):
         self.btn_fullscreen.draw(scene, self.font)
         
     def update(self):
-        super().update()
+#         super().update()
         
         self.button_resize(self.rect_recurse_scene.x,
                            self.rect_recurse_scene.y,
@@ -365,7 +365,12 @@ class Scenarios(Scene):
         self.main_bg = load_img('assets/scenarios_bg.png',
                                 (self.width,
                                  self.height))
-        self.rect_list = pg.Rect(100, 100, 400, 600)
+        self.rect_list = pg.Rect(100, 0, 400, 650)
+        self.btn_start = GameButton(self.width - 602,
+                                    self.height - 120,
+                                    200, 100,
+                                    img = 'assets/start_button_unactivate.png',
+                                   img_activate = 'assets/start_button_activate.png')
         self.btn_exit = GameButton(self.width - 200,
                                    self.height - 200,
                                    150,
@@ -378,6 +383,8 @@ class Scenarios(Scene):
         
         if self.btn_exit.is_clicked(event):
             return 'MainMenu'
+        if self.btn_start.is_clicked(event):
+            print('Start')
         
     def draw(self, scene):
         super().draw(scene)
@@ -386,7 +393,12 @@ class Scenarios(Scene):
             scene.blit(self.main_bg, (0, 0))
         else:
             scene.fill((0, 255, 0))
-        scene.blit(load_img('assets/setting_bg.png',
+        scene.blit(load_img('assets/scenarios_rect.png',
                                 (400,
-                                600)), self.rect_list)
+                                650)), self.rect_list)
         self.btn_exit.draw(scene, self.font)
+        self.btn_start.draw(scene, self.font)
+        
+    def update(self):
+        super().update()
+        self.btn_start.update(self.mouse)
