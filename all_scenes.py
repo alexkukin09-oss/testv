@@ -351,6 +351,7 @@ class SettingsMenu(Scene):
         self.btn_exit.update(self.mouse)
         
 class Scenarios(Scene):
+    # 35500 солнц до уничтожения всех врагов 
     castles = [{'title':'Necrptozis',
                 'heroes':['Vidomina', 'Straker'],
                 'bonus':['gold', 'resources', 'artifact']},
@@ -358,6 +359,11 @@ class Scenarios(Scene):
                 'heroes':['Gabriel', 'Azazel'],
                 'bonus':['gold', 'resources', 'artifact']}]
     difficulty = ('easy', 'normal', 'hard')
+    size = {'minimal':(50, 50),
+            'small':(120, 120),
+            'medium':(640, 640),
+            'big':(1000, 1000),
+            'Mega':(12000, 12000)}
     def __init__(self, width, height):
         super().__init__(width, height)
         self.width = width
@@ -377,6 +383,9 @@ class Scenarios(Scene):
                                    150,
                                    img = 'assets/exit_button_unactivate.png',
                                    img_activate = 'assets/exit_button_activate.png')
+        self.height_row = 50
+        self.max_count_row = 12 # сценарии которые видны
+        
         
     def hendler(self, event):
         super().hendler(event)
