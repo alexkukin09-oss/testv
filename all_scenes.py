@@ -4,6 +4,7 @@ import os
 from load_img import *
 from game_button import *
 from scene import *
+import json
 pg.init()
 
 width = 800
@@ -91,7 +92,6 @@ class GameMenu(Scene):
                     print('Load Game')
                     return 'load_game'
                 elif self.btn_exit.collidepoint(self.mouse):
-                    print('Back')
                     return 'MainMenu'
                 
 class SettingsMenu(Scene):
@@ -391,7 +391,7 @@ class Scenarios(Scene):
         super().hendler(event)
         
         if self.btn_exit.is_clicked(event):
-            return 'MainMenu'
+            return 'game'
         if self.btn_start.is_clicked(event):
             print('Start')
         
