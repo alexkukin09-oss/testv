@@ -411,3 +411,17 @@ class Scenarios(Scene):
     def update(self):
         super().update()
         self.btn_start.update(self.mouse)
+        
+    def _build_scenarios(self):
+        try:
+            with open('scenarios.json', 'r', encoding='utf-8') as s:
+                data = json.load(s)
+        except FileNotFoundError:
+            data = {}
+            print('FileNotFoundError')
+        else:
+            title = data[0]['title']
+            description = data[0]['description']
+            picture_path = data[0]['picture_path']
+            size = data[0]['size']
+            
