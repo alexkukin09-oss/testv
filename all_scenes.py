@@ -383,8 +383,14 @@ class Scenarios(Scene):
                                    150,
                                    img = 'assets/exit_button_unactivate.png',
                                    img_activate = 'assets/exit_button_activate.png')
+        self.scenarios_bg = load_img('assets/scenarios_rect.png',
+                                (400,
+                                650))
         self.height_row = 50
+        self.row_bg = load_img('assets/scenarios.png', (350, self.height_row))
         self.max_count_row = 12 # сценарии которые видны
+        self.scenarios_font = pg.font.SysFont('Bahnschrift Light Condensed', 30)
+        self._build_scenarios()
         
         
     def hendler(self, event):
@@ -402,11 +408,10 @@ class Scenarios(Scene):
             scene.blit(self.main_bg, (0, 0))
         else:
             scene.fill((0, 255, 0))
-        scene.blit(load_img('assets/scenarios_rect.png',
-                                (400,
-                                650)), self.rect_list)
+        scene.blit(self.scenarios_bg, self.rect_list)
         self.btn_exit.draw(scene, self.font)
         self.btn_start.draw(scene, self.font)
+        
         
     def update(self):
         super().update()
@@ -417,11 +422,30 @@ class Scenarios(Scene):
             with open('scenarios.json', 'r', encoding='utf-8') as s:
                 data = json.load(s)
         except FileNotFoundError:
-            data = {}
+            data = [{}]
             print('FileNotFoundError')
-        else:
-            title = data[0]['title']
-            description = data[0]['description']
-            picture_path = data[0]['picture_path']
-            size = data[0]['size']
-            
+#         title = data[0]['title']
+#         description = data[0]['description']
+#         picture_path = data[0]['picture_path']
+#         size = data[0]['size']
+        self.titles = []
+        self.sizes = []
+        for i in range(self.max_count_row):
+            if i < len(data):
+                title = data[0].get('title', '')
+                size = data[0].get('size', '')
+                self.titles.append(self.scenarios_font.render(title,
+                                               True,
+                                               (255, 255, 255)))
+                size_image = load_img(f'assets/size_{size}.png',
+                                      (self.height_row-10,
+                                       self.height_row-10))
+                if size_image is None:
+                    size_image = self.scenarios_font.render(size,
+                                               True,
+                                               (255, 255, 255))
+                self.sizes.append(size_image)
+            else:
+                self.titles.append(None)
+                self.sizes.append(None)
+        
