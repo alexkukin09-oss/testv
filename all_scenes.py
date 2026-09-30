@@ -387,9 +387,9 @@ class Scenarios(Scene):
                                 (400,
                                 650))
         self.height_row = 50
-        self.row_bg = load_img('assets/scenarios.png', (350, self.height_row))
-        self.max_count_row = 12 # сценарии которые видны
-        self.scenarios_font = pg.font.SysFont('Bahnschrift Light Condensed', 30)
+        self.row_bg = load_img('assets/scenarios.png', (305, self.height_row))
+        self.max_count_row = 11 # сценарии которые видны
+        self.scenarios_font = pg.font.Font('fonts/Bahnschrift.ttf', 30)
         self._build_scenarios()
         
         
@@ -408,9 +408,30 @@ class Scenarios(Scene):
             scene.blit(self.main_bg, (0, 0))
         else:
             scene.fill((0, 255, 0))
-        scene.blit(self.scenarios_bg, self.rect_list)
+#         scene.blit(self.scenarios_bg, self.rect_list)
         self.btn_exit.draw(scene, self.font)
         self.btn_start.draw(scene, self.font)
+        for i in range(self.max_count_row - 1):
+            y = self.rect_list.y + (i + 1) * self.height_row
+            if self.row_bg:
+                scene.blit(self.row_bg, (147, y))
+                title = self.titles[i]
+                size = self.sizes[i]
+                if title:
+                    scene.blit(title, (207, y + 10))
+                if size:
+                    scene.blit(size, (157, y + 5))
+        map_size = Scenarios.size.keys()
+        for i in range(len(Scenarios.size)):
+            x = self.rect_list.x + 65 + i * (self.height_row + 5)
+#             size_image = load_img(f'assets/size_{size}.png',
+#                                       (self.height_row-10,
+#                                        self.height_row-10))
+            size_image = load_img('assets/polzynok_unactivate.png',
+                                      (self.height_row-10,
+                                       self.height_row-10))
+            scene.blit(size_image, (x, self.rect_list.y + 5))
+        scene.blit(self.scenarios_bg, self.rect_list)
         
         
     def update(self):
@@ -432,8 +453,8 @@ class Scenarios(Scene):
         self.sizes = []
         for i in range(self.max_count_row):
             if i < len(data):
-                title = data[0].get('title', '')
-                size = data[0].get('size', '')
+                title = data[i].get('title', '')
+                size = data[i].get('size', '')
                 self.titles.append(self.scenarios_font.render(title,
                                                True,
                                                (255, 255, 255)))
@@ -441,9 +462,12 @@ class Scenarios(Scene):
                                       (self.height_row-10,
                                        self.height_row-10))
                 if size_image is None:
-                    size_image = self.scenarios_font.render(size,
-                                               True,
-                                               (255, 255, 255))
+#                     size_image = self.scenarios_font.render(size,
+#                                                True,
+#                                                (255, 255, 255))
+                    size_image = load_img('assets/polzynok_unactivate.png',
+                                      (self.height_row-10,
+                                       self.height_row-10))
                 self.sizes.append(size_image)
             else:
                 self.titles.append(None)
