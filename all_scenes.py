@@ -371,7 +371,7 @@ class Scenarios(Scene):
         self.main_bg = load_img('assets/scenarios_bg.png',
                                 (self.width,
                                  self.height))
-        self.rect_list = pg.Rect(100, 0, 400, 650)
+        self.rect_list = pg.Rect(100, 0, 400, 650) # ЭТО СТОЛБЫ
         self.btn_start = GameButton(self.width - 602,
                                     self.height - 120,
                                     200, 100,
@@ -390,6 +390,7 @@ class Scenarios(Scene):
         self.row_bg = load_img('assets/scenarios.png', (305, self.height_row))
         self.max_count_row = 11 # сценарии которые видны
         self.scenarios_font = pg.font.Font('fonts/Bahnschrift.ttf', 30)
+        self.scrolling = 0
         self._build_scenarios()
         
         
@@ -400,6 +401,24 @@ class Scenarios(Scene):
             return 'game'
         if self.btn_start.is_clicked(event):
             print('Start')
+        if (event.type == pg.MOUSEBUTTONDOWN
+            and self.rect_list.collidepoint(event.pos)
+            and event.button == 1):
+            y = self.mouse[1]
+            x = self.mouse[0]
+            if 147 <= x <= 452:
+                index = y // self.height_row
+                if index >= 1 and index < self.max_count_row:
+                    index -= 1
+                    real_index = index + self.scrolling
+                    if real_index < len(self.data):
+                        print(self.data[real_index]['title'])
+        if (event.type == pg.MOUSEWHEEL
+            and self.rect_list.collidepoint(self.mouse)):
+            wheel = self.scrolling - event.y
+            if wheel > len(self.data) - self.max_count_row:
+                self.scrolling = wheel
+            
         
     def draw(self, scene):
         super().draw(scene)
@@ -441,9 +460,9 @@ class Scenarios(Scene):
     def _build_scenarios(self):
         try:
             with open('scenarios.json', 'r', encoding='utf-8') as s:
-                data = json.load(s)
+                self.data = json.load(s)
         except FileNotFoundError:
-            data = [{}]
+            self.data = [{}]
             print('FileNotFoundError')
 #         title = data[0]['title']
 #         description = data[0]['description']
@@ -452,9 +471,9 @@ class Scenarios(Scene):
         self.titles = []
         self.sizes = []
         for i in range(self.max_count_row):
-            if i < len(data):
-                title = data[i].get('title', '')
-                size = data[i].get('size', '')
+            if i < len(self.data):
+                title = self.data[i].get('title', '')
+                size = self.data[i].get('size', '')
                 self.titles.append(self.scenarios_font.render(title,
                                                True,
                                                (255, 255, 255)))
