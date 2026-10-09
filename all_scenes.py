@@ -413,16 +413,19 @@ class Scenarios(Scene):
                     real_index = index + self.scrolling
                     if real_index < len(self.data):
                         print(self.data[real_index]['title'])
+                    else:
+                        print('None')
         if (event.type == pg.MOUSEWHEEL
             and self.rect_list.collidepoint(self.mouse)):
             wheel = self.scrolling - event.y
-            if wheel > len(self.data) - self.max_count_row:
-                self.scrolling = wheel
+            self.scrolling = max(0,
+                                 max(wheel,
+                                    min(0,
+                                    len(self.data) - self.max_count_row)))
             
         
     def draw(self, scene):
         super().draw(scene)
-        
         if self.main_bg:
             scene.blit(self.main_bg, (0, 0))
         else:
@@ -432,9 +435,12 @@ class Scenarios(Scene):
         self.btn_start.draw(scene, self.font)
         for i in range(self.max_count_row - 1):
             y = self.rect_list.y + (i + 1) * self.height_row
+            index = i + self.scrolling
+            if index > len(self.data):
+                continue
             if self.row_bg:
                 scene.blit(self.row_bg, (147, y))
-                title = self.titles[i]
+                title = self.titles[index] if index < len(self.titles) else ''
                 size = self.sizes[i]
                 if title:
                     scene.blit(title, (207, y + 10))
@@ -470,25 +476,24 @@ class Scenarios(Scene):
 #         size = data[0]['size']
         self.titles = []
         self.sizes = []
-        for i in range(self.max_count_row):
-            if i < len(self.data):
-                title = self.data[i].get('title', '')
-                size = self.data[i].get('size', '')
-                self.titles.append(self.scenarios_font.render(title,
-                                               True,
-                                               (255, 255, 255)))
-                size_image = load_img(f'assets/size_{size}.png',
-                                      (self.height_row-10,
-                                       self.height_row-10))
-                if size_image is None:
+        for i in range(len(self.data)):
+            title = self.data[i].get('title', '')
+            size = self.data[i].get('size', '')
+            self.titles.append(self.scenarios_font.render(title,
+                                           True,
+                                            (255, 255, 255)))
+            size_image = load_img(f'assets/size_{size}.png',
+                                  (self.height_row-10,
+                                   self.height_row-10))
+            if size_image is None:
 #                     size_image = self.scenarios_font.render(size,
 #                                                True,
 #                                                (255, 255, 255))
-                    size_image = load_img('assets/polzynok_unactivate.png',
-                                      (self.height_row-10,
-                                       self.height_row-10))
-                self.sizes.append(size_image)
-            else:
-                self.titles.append(None)
-                self.sizes.append(None)
-        
+                size_image = load_img('assets/polzynok_unactivate.png',
+                                  (self.height_row-10,
+                                   self.height_row-10))
+            self.sizes.append(size_image)
+#             else:
+#                 self.titles.append(None)
+#                 self.sizes.append(None)
+        print(len(self.data))
