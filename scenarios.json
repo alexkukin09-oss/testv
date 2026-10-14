@@ -333,7 +333,7 @@
     "food":1,
     "water":1},
 "picture_path":"",
-"size":"medium",
+"size":"small",
 "castles":[{"title":"Sky castle",
             "heroes":["Gabriel", "Azazel"],
             "bonus":["gold", "resources", "artifact"]}],

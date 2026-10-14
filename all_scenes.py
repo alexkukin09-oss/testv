@@ -418,10 +418,14 @@ class Scenarios(Scene):
         if (event.type == pg.MOUSEWHEEL
             and self.rect_list.collidepoint(self.mouse)):
             wheel = self.scrolling - event.y
+            max_wheel = self.max_count_row - 1 # максимальное кол-во пустых пластин
+            max_scrolling = len(self.data) - self.max_count_row + max_wheel
+#             self.scrolling = max(0,
+#                                  max(wheel,
+#                                     min(0,
+#                                     len(self.data) - self.max_count_row)))
             self.scrolling = max(0,
-                                 max(wheel,
-                                    min(0,
-                                    len(self.data) - self.max_count_row)))
+                                 min(wheel, max_scrolling))
             
         
     def draw(self, scene):
@@ -436,25 +440,24 @@ class Scenarios(Scene):
         for i in range(self.max_count_row - 1):
             y = self.rect_list.y + (i + 1) * self.height_row
             index = i + self.scrolling
-            if index > len(self.data):
-                continue
             if self.row_bg:
                 scene.blit(self.row_bg, (147, y))
                 title = self.titles[index] if index < len(self.titles) else ''
-                size = self.sizes[i]
+                size = self.sizes[index] if index < len(self.titles) else None
                 if title:
                     scene.blit(title, (207, y + 10))
                 if size:
                     scene.blit(size, (157, y + 5))
-        map_size = Scenarios.size.keys()
+        map_size = list(Scenarios.size.keys())
         for i in range(len(Scenarios.size)):
             x = self.rect_list.x + 65 + i * (self.height_row + 5)
-#             size_image = load_img(f'assets/size_{size}.png',
-#                                       (self.height_row-10,
-#                                        self.height_row-10))
-            size_image = load_img('assets/polzynok_unactivate.png',
+            size_image = load_img(f'assets/size_{map_size[i]}.png',
                                       (self.height_row-10,
                                        self.height_row-10))
+            if size_image is None:
+                size_image = load_img('assets/polzynok_unactivate.png',
+                                          (self.height_row-10,
+                                           self.height_row-10))
             scene.blit(size_image, (x, self.rect_list.y + 5))
         scene.blit(self.scenarios_bg, self.rect_list)
         
@@ -470,10 +473,6 @@ class Scenarios(Scene):
         except FileNotFoundError:
             self.data = [{}]
             print('FileNotFoundError')
-#         title = data[0]['title']
-#         description = data[0]['description']
-#         picture_path = data[0]['picture_path']
-#         size = data[0]['size']
         self.titles = []
         self.sizes = []
         for i in range(len(self.data)):
@@ -485,6 +484,7 @@ class Scenarios(Scene):
             size_image = load_img(f'assets/size_{size}.png',
                                   (self.height_row-10,
                                    self.height_row-10))
+            print(title, size, size_image)
             if size_image is None:
 #                     size_image = self.scenarios_font.render(size,
 #                                                True,
@@ -493,7 +493,12 @@ class Scenarios(Scene):
                                   (self.height_row-10,
                                    self.height_row-10))
             self.sizes.append(size_image)
-#             else:
-#                 self.titles.append(None)
-#                 self.sizes.append(None)
-        print(len(self.data))
+            
+    def _scenarios_info(self, name, index):
+        scenarios = self.data[index]
+        picture = scenarios.get('picture_path',
+                                'assets/polzynok_unactivate.png')
+        description = scenarios.get('description', '')
+        enemies = len(scenarios.get('enemies', ''))
+        allies = len(scenarios.get('allies', ''))
+        
