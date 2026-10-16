@@ -372,15 +372,27 @@ class Scenarios(Scene):
                                 (self.width,
                                  self.height))
         self.rect_list = pg.Rect(100, 0, 400, 650) # ЭТО СТОЛБЫ
+        panel_x = 510
+        panel_width = 280
+        self.picture_rect = pg.Rect(panel_x, 0, panel_width, 200)
+        self.name_rect = pg.Rect(panel_x, 200, panel_width, 50)
+        self.description_rect = pg.Rect(panel_x, 250, panel_width, 150)
+        self.enemies_rect = pg.Rect(panel_x, 400, panel_width//2, 50)
+        self.allies_rect = pg.Rect(panel_x+panel_width//2, 400,
+                                   panel_width//2, 50)
+        self.defeat_condition = pg.Rect(panel_x, 450, panel_width, 50)
+        self.victory_condition = pg.Rect(panel_x, 500, panel_width, 50)
+        self.difficulty_rect = pg.Rect(panel_x, 550, panel_width, 50)
+        self.btn_alternative = GameButton(panel_x, 600, panel_width, 50)
         self.btn_start = GameButton(self.width - 602,
                                     self.height - 120,
                                     200, 100,
                                     img = 'assets/start_button_unactivate.png',
                                    img_activate = 'assets/start_button_activate.png')
         self.btn_exit = GameButton(self.width - 200,
-                                   self.height - 200,
-                                   150,
-                                   150,
+                                   self.height - 150,
+                                   145,
+                                   145,
                                    img = 'assets/exit_button_unactivate.png',
                                    img_activate = 'assets/exit_button_activate.png')
         self.scenarios_bg = load_img('assets/scenarios_rect.png',
@@ -391,6 +403,7 @@ class Scenarios(Scene):
         self.max_count_row = 11 # сценарии которые видны
         self.scenarios_font = pg.font.Font('fonts/Bahnschrift.ttf', 30)
         self.scrolling = 0
+        self.txt_scrolling = 0
         self._build_scenarios()
         
         
@@ -460,11 +473,21 @@ class Scenarios(Scene):
                                            self.height_row-10))
             scene.blit(size_image, (x, self.rect_list.y + 5))
         scene.blit(self.scenarios_bg, self.rect_list)
+        pg.draw.rect(scene, (255, 0, 0), self.picture_rect)
+        pg.draw.rect(scene, (255, 165, 0), self.name_rect)
+        pg.draw.rect(scene, (255, 255, 0), self.description_rect)
+        pg.draw.rect(scene, (0, 128, 0), self.enemies_rect)
+        pg.draw.rect(scene, (0, 0, 255), self.allies_rect)
+        pg.draw.rect(scene, (75, 0, 130), self.defeat_condition)
+        pg.draw.rect(scene, (238, 130, 238), self.victory_condition)
+        pg.draw.rect(scene, (255, 255, 255), self.difficulty_rect)
+        self.btn_alternative.draw(scene, self.font)
         
         
     def update(self):
         super().update()
         self.btn_start.update(self.mouse)
+        self.btn_alternative.update(self.mouse)
         
     def _build_scenarios(self):
         try:
@@ -494,11 +517,16 @@ class Scenarios(Scene):
                                    self.height_row-10))
             self.sizes.append(size_image)
             
-    def _scenarios_info(self, name, index):
+    def _scenarios_info(self, index):
+        if index >= len(self.data):
+            return None
         scenarios = self.data[index]
+        name = scenarios.get('title', '')
         picture = scenarios.get('picture_path',
                                 'assets/polzynok_unactivate.png')
         description = scenarios.get('description', '')
         enemies = len(scenarios.get('enemies', ''))
         allies = len(scenarios.get('allies', ''))
+        d_condition = scenarios.get('d_condition', '')
+        v_condition = scenarios.get('v_condition', '')
         
