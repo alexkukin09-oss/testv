@@ -383,7 +383,7 @@ class Scenarios(Scene):
         self.defeat_condition = pg.Rect(panel_x, 450, panel_width, 50)
         self.victory_condition = pg.Rect(panel_x, 500, panel_width, 50)
         self.difficulty_rect = pg.Rect(panel_x, 550, panel_width, 50)
-        self.btn_alternative = GameButton(panel_x, 600, panel_width, 50)
+        self.btn_alternative = GameButton(panel_x, 600, panel_width, 50) # замки
         self.btn_start = GameButton(self.width - 602,
                                     self.height - 120,
                                     200, 100,
@@ -525,8 +525,21 @@ class Scenarios(Scene):
         picture = scenarios.get('picture_path',
                                 'assets/polzynok_unactivate.png')
         description = scenarios.get('description', '')
-        enemies = len(scenarios.get('enemies', ''))
-        allies = len(scenarios.get('allies', ''))
-        d_condition = scenarios.get('d_condition', '')
+        enemies = str(len(scenarios.get('enemies', '')))
+        allies = str(len(scenarios.get('allies', '')))
+        d_condition = scenarios.get('d_condition', 'Потерять всё')
         v_condition = scenarios.get('v_condition', '')
+        def build(txt, rect, bg, scroll = 0):
+            surf = pg.Surface((rect.x, rect.y), pg.SRCALPHA)
+            surf.fill((*bg, 127))
+            max_width = rect.width - 10
+            max_height = rect.height - 10
+            lines = []
+            if txt:
+                words = txt.split()
+                line = ''
+                for i in words:
+                    current = line + (' ' if line else '') + i
+                    if self.scenarios_font.size(current)[0] <= max_width:
+                        pass
         
