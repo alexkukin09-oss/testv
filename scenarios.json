@@ -9,7 +9,7 @@
     "food":1,
     "water":1},
 "d_condition":"Потерять всё",
-"v_condition":"Собрать нужное количество солнц до проражения всех врагов",
+"v_condition":"Собрать нужное количество солнц до поражения всех врагов",
 "picture_path":"",
 "size":"medium",
 "castles":[{"title":"Sky castle",

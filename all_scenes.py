@@ -405,6 +405,7 @@ class Scenarios(Scene):
         self.scrolling = 0
         self.txt_scrolling = 0
         self._build_scenarios()
+        self._scenarios_info(0)
         
         
     def hendler(self, event):
@@ -473,15 +474,23 @@ class Scenarios(Scene):
                                            self.height_row-10))
             scene.blit(size_image, (x, self.rect_list.y + 5))
         scene.blit(self.scenarios_bg, self.rect_list)
-        pg.draw.rect(scene, (255, 0, 0), self.picture_rect)
-        pg.draw.rect(scene, (255, 165, 0), self.name_rect)
-        pg.draw.rect(scene, (255, 255, 0), self.description_rect)
-        pg.draw.rect(scene, (0, 128, 0), self.enemies_rect)
-        pg.draw.rect(scene, (0, 0, 255), self.allies_rect)
-        pg.draw.rect(scene, (75, 0, 130), self.defeat_condition)
-        pg.draw.rect(scene, (238, 130, 238), self.victory_condition)
+#         pg.draw.rect(scene, (255, 0, 0), self.picture_rect)
+#         pg.draw.rect(scene, (255, 165, 0), self.name_rect)
+#         pg.draw.rect(scene, (255, 255, 0), self.description_rect)
+#         pg.draw.rect(scene, (0, 128, 0), self.enemies_rect)
+#         pg.draw.rect(scene, (0, 0, 255), self.allies_rect)
+#         pg.draw.rect(scene, (75, 0, 130), self.defeat_condition)
+#         pg.draw.rect(scene, (238, 130, 238), self.victory_condition)
         pg.draw.rect(scene, (255, 255, 255), self.difficulty_rect)
         self.btn_alternative.draw(scene, self.font)
+        scene.blit(self.picture_surf, self.picture_rect)
+        scene.blit(self.name_surf, self.name_rect)
+        scene.blit(self.description_surf, self.description_rect)
+        scene.blit(self.enemies_surf, self.enemies_rect)
+        scene.blit(self.allies_surf, self.allies_rect)
+        scene.blit(self.defeat_condition_surf, self.defeat_condition)
+        scene.blit(self.victory_condition_surf,
+                   self.victory_condition)
         
         
     def update(self):
@@ -536,10 +545,47 @@ class Scenarios(Scene):
             max_height = rect.height - 10
             lines = []
             if txt:
-                words = txt.split()
                 line = ''
-                for i in words:
+                for i in txt.split():
                     current = line + (' ' if line else '') + i
                     if self.scenarios_font.size(current)[0] <= max_width:
-                        pass
-        
+                        line = current
+                    else:
+                        lines.append(line)
+                        line = i
+            txt_surf = [self.scenarios_font.render(i,
+                                                   True,
+                                                   (255,
+                                                    255,
+                                                    255)) for i in lines]
+            y = 5
+            if not scroll:
+                n = 0
+                for i in txt_surf:
+                    n += i.get_height() + y
+                if n > max_height:
+                    scroll += 1
+            for i in txt_surf:
+                surf.blit(i, (5, y))
+                y += i.get_height() + 5
+            return surf
+        self.picture_surf = pg.Surface((self.picture_rect.x,
+                                        self.picture_rect.y))
+        img_picture = load_img(picture, (self.picture_rect.x,
+                                        self.picture_rect.y))
+        if not img_picture:
+            img_picture = load_img('assets/polzynok_unactivate.png',
+                                   (self.picture_rect.x,
+                                    self.picture_rect.y))
+        self.picture_surf.blit(img_picture, (0, 0))
+        self.name_surf = build(name, self.name_rect, (255, 0, 103))
+        self.description_surf = build(description,
+                                      self.description_rect, (0, 255, 103))
+        self.allies_surf = build(allies, self.allies_rect, (255, 255, 103))
+        self.enemies_surf = build(enemies, self.enemies_rect, (0, 0, 103))
+        self.defeat_condition_surf = build(d_condition,
+                                           self.defeat_condition,
+                                           (100, 0, 103))
+        self.victory_condition_surf = build(v_condition,
+                                            self.victory_condition,
+                                            (0, 100, 103))
