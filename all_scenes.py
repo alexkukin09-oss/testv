@@ -403,7 +403,8 @@ class Scenarios(Scene):
         self.max_count_row = 11 # сценарии которые видны
         self.scenarios_font = pg.font.Font('fonts/Bahnschrift.ttf', 30)
         self.scrolling = 0
-        self.txt_scrolling = 0
+        self.description_scroll = 0
+#         self.txt_scrolling = 0
         self._build_scenarios()
         self._scenarios_info(0)
         
@@ -426,7 +427,7 @@ class Scenarios(Scene):
                     index -= 1
                     real_index = index + self.scrolling
                     if real_index < len(self.data):
-                        print(self.data[real_index]['title'])
+                        self._scenarios_info(real_index)
                     else:
                         print('None')
         if (event.type == pg.MOUSEWHEEL
@@ -440,6 +441,14 @@ class Scenarios(Scene):
 #                                     len(self.data) - self.max_count_row)))
             self.scrolling = max(0,
                                  min(wheel, max_scrolling))
+        txt_height = self.scenarios_font.get_height()
+        if (event.type == pg.MOUSEWHEEL
+            and self.description_rect.collidepoint(self.mouse)):
+            self.description_scroll = max(0,
+                                          min(self.max_description_scroll,
+                                              self.description_scroll-
+                                              (event.y*txt_height)))
+            
             
         
     def draw(self, scene):
@@ -485,7 +494,7 @@ class Scenarios(Scene):
         self.btn_alternative.draw(scene, self.font)
         scene.blit(self.picture_surf, self.picture_rect)
         scene.blit(self.name_surf, self.name_rect)
-        scene.blit(self.description_surf, self.description_rect)
+        scene.blit(self.description_surf, self.description_rect) # отображение текста со скроллингом
         scene.blit(self.enemies_surf, self.enemies_rect)
         scene.blit(self.allies_surf, self.allies_rect)
         scene.blit(self.defeat_condition_surf, self.defeat_condition)
@@ -516,7 +525,6 @@ class Scenarios(Scene):
             size_image = load_img(f'assets/size_{size}.png',
                                   (self.height_row-10,
                                    self.height_row-10))
-            print(title, size, size_image)
             if size_image is None:
 #                     size_image = self.scenarios_font.render(size,
 #                                                True,
@@ -539,7 +547,7 @@ class Scenarios(Scene):
         d_condition = scenarios.get('d_condition', 'Потерять всё')
         v_condition = scenarios.get('v_condition', '')
         def build(txt, rect, bg, scroll = 0):
-            surf = pg.Surface((rect.x, rect.y), pg.SRCALPHA)
+            surf = pg.Surface((rect.width, rect.height), pg.SRCALPHA)
             surf.fill((*bg, 127))
             max_width = rect.width - 10
             max_height = rect.height - 10
@@ -553,6 +561,7 @@ class Scenarios(Scene):
                     else:
                         lines.append(line)
                         line = i
+                lines.append(line)
             txt_surf = [self.scenarios_font.render(i,
                                                    True,
                                                    (255,
@@ -568,24 +577,27 @@ class Scenarios(Scene):
             for i in txt_surf:
                 surf.blit(i, (5, y))
                 y += i.get_height() + 5
-            return surf
-        self.picture_surf = pg.Surface((self.picture_rect.x,
-                                        self.picture_rect.y))
-        img_picture = load_img(picture, (self.picture_rect.x,
-                                        self.picture_rect.y))
+            return surf, scroll
+        self.picture_surf = pg.Surface((self.picture_rect.width,
+                                        self.picture_rect.height))
+        img_picture = load_img(picture, (self.picture_rect.width,
+                                        self.picture_rect.height))
         if not img_picture:
             img_picture = load_img('assets/polzynok_unactivate.png',
-                                   (self.picture_rect.x,
-                                    self.picture_rect.y))
+                                   (self.picture_rect.width,
+                                    self.picture_rect.height))
         self.picture_surf.blit(img_picture, (0, 0))
-        self.name_surf = build(name, self.name_rect, (255, 0, 103))
-        self.description_surf = build(description,
-                                      self.description_rect, (0, 255, 103))
-        self.allies_surf = build(allies, self.allies_rect, (255, 255, 103))
-        self.enemies_surf = build(enemies, self.enemies_rect, (0, 0, 103))
-        self.defeat_condition_surf = build(d_condition,
+        self.name_surf = build(name, self.name_rect, (255, 0, 103))[0]
+        self.description_surf, self.max_description_scroll = build(description,
+                                      self.description_rect,
+                                      (0, 255, 103))
+        self.allies_surf = build(allies, self.allies_rect,
+                                 (255, 255, 103))[0]
+        self.enemies_surf = build(enemies, self.enemies_rect,
+                                  (0, 0, 103))[0]
+        self.defeat_condition_surf, self.max_defeat_condition_scroll = build(d_condition,
                                            self.defeat_condition,
                                            (100, 0, 103))
-        self.victory_condition_surf = build(v_condition,
+        self.victory_condition_surf, self.max_victory_condition_sroll = build(v_condition,
                                             self.victory_condition,
                                             (0, 100, 103))
