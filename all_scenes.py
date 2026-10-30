@@ -404,6 +404,8 @@ class Scenarios(Scene):
         self.scenarios_font = pg.font.Font('fonts/Bahnschrift.ttf', 30)
         self.scrolling = 0
         self.description_scroll = 0
+        self.victory_scroll = 0
+        self.defeat_scroll = 0
 #         self.txt_scrolling = 0
         self._build_scenarios()
         self._scenarios_info(0)
@@ -448,6 +450,18 @@ class Scenarios(Scene):
                                           min(self.max_description_scroll,
                                               self.description_scroll-
                                               (event.y*txt_height)))
+        if (event.type == pg.MOUSEWHEEL
+            and self.victory_condition.collidepoint(self.mouse)):
+            self.victory_scroll = max(0,
+                                    min(self.max_victory_condition_scroll,
+                                      self.victory_scroll-
+                                      (event.y*txt_height)))
+        if (event.type == pg.MOUSEWHEEL
+            and self.defeat_condition.collidepoint(self.mouse)):
+            self.defeat_scroll = max(0,
+                                    min(self.max_defeat_condition_scroll,
+                                      self.defeat_scroll-
+                                      (event.y*txt_height)))
             
             
         
@@ -494,12 +508,29 @@ class Scenarios(Scene):
         self.btn_alternative.draw(scene, self.font)
         scene.blit(self.picture_surf, self.picture_rect)
         scene.blit(self.name_surf, self.name_rect)
-        scene.blit(self.description_surf, self.description_rect) # отображение текста со скроллингом
+        s = pg.Surface((self.description_rect.width,
+                               self.description_rect.height),
+                              pg.SRCALPHA)
+        s.fill((*(0, 255, 103), 127))
+        scene.blit(s,
+                   self.description_rect)
+        scene.set_clip(self.description_rect)
+        scene.blit(self.description_surf,
+                   (self.description_rect.x,
+                    self.description_rect.y-self.description_scroll)) # отображение текста со скроллингом
+        scene.set_clip(None)
         scene.blit(self.enemies_surf, self.enemies_rect)
         scene.blit(self.allies_surf, self.allies_rect)
-        scene.blit(self.defeat_condition_surf, self.defeat_condition)
+        scene.set_clip(self.defeat_condition)
+        scene.blit(self.defeat_condition_surf,
+                   (self.defeat_condition.x,
+                    self.defeat_condition.y-self.defeat_scroll))
+        scene.set_clip(None)
+        scene.set_clip(self.victory_condition)
         scene.blit(self.victory_condition_surf,
-                   self.victory_condition)
+                   (self.victory_condition.x,
+                    self.victory_condition.y-self.victory_scroll))
+        scene.set_clip(None)
         
         
     def update(self):
@@ -547,10 +578,8 @@ class Scenarios(Scene):
         d_condition = scenarios.get('d_condition', 'Потерять всё')
         v_condition = scenarios.get('v_condition', '')
         def build(txt, rect, bg, scroll = 0):
-            surf = pg.Surface((rect.width, rect.height), pg.SRCALPHA)
-            surf.fill((*bg, 127))
             max_width = rect.width - 10
-            max_height = rect.height - 10
+            max_height = rect.height
             lines = []
             if txt:
                 line = ''
@@ -562,6 +591,7 @@ class Scenarios(Scene):
                         lines.append(line)
                         line = i
                 lines.append(line)
+                print(lines)
             txt_surf = [self.scenarios_font.render(i,
                                                    True,
                                                    (255,
@@ -572,8 +602,11 @@ class Scenarios(Scene):
                 n = 0
                 for i in txt_surf:
                     n += i.get_height() + y
+                surf_height = n
                 if n > max_height:
-                    scroll += 1
+                    scroll += 100
+            surf = pg.Surface((rect.width, surf_height), pg.SRCALPHA)
+            surf.fill((*bg, 0))
             for i in txt_surf:
                 surf.blit(i, (5, y))
                 y += i.get_height() + 5
@@ -598,6 +631,6 @@ class Scenarios(Scene):
         self.defeat_condition_surf, self.max_defeat_condition_scroll = build(d_condition,
                                            self.defeat_condition,
                                            (100, 0, 103))
-        self.victory_condition_surf, self.max_victory_condition_sroll = build(v_condition,
+        self.victory_condition_surf, self.max_victory_condition_scroll = build(v_condition,
                                             self.victory_condition,
                                             (0, 100, 103))
