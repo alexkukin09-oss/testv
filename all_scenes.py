@@ -507,7 +507,14 @@ class Scenarios(Scene):
         pg.draw.rect(scene, (255, 255, 255), self.difficulty_rect)
         self.btn_alternative.draw(scene, self.font)
         scene.blit(self.picture_surf, self.picture_rect)
+        
+        s = pg.Surface((self.name_rect.width,
+                               self.name_rect.height),
+                              pg.SRCALPHA)
+        s.fill((*(255, 0, 103), 127))
+        scene.blit(s, self.name_rect)
         scene.blit(self.name_surf, self.name_rect)
+        
         s = pg.Surface((self.description_rect.width,
                                self.description_rect.height),
                               pg.SRCALPHA)
@@ -519,13 +526,37 @@ class Scenarios(Scene):
                    (self.description_rect.x,
                     self.description_rect.y-self.description_scroll)) # отображение текста со скроллингом
         scene.set_clip(None)
+        
+        s = pg.Surface((self.enemies_rect.width,
+                               self.enemies_rect.height),
+                              pg.SRCALPHA)
+        s.fill((*(0, 0, 103), 127))
+        scene.blit(s, self.enemies_rect)
         scene.blit(self.enemies_surf, self.enemies_rect)
+        
+        s = pg.Surface((self.allies_rect.width,
+                               self.allies_rect.height),
+                              pg.SRCALPHA)
+        s.fill((*(255, 255, 103), 127))
+        scene.blit(s, self.allies_rect)
         scene.blit(self.allies_surf, self.allies_rect)
+        
+        s = pg.Surface((self.defeat_condition.width,
+                               self.defeat_condition.height),
+                              pg.SRCALPHA)
+        s.fill((*(100, 0, 103), 127))
+        scene.blit(s, self.defeat_condition)
         scene.set_clip(self.defeat_condition)
         scene.blit(self.defeat_condition_surf,
                    (self.defeat_condition.x,
                     self.defeat_condition.y-self.defeat_scroll))
         scene.set_clip(None)
+        
+        s = pg.Surface((self.victory_condition.width,
+                               self.victory_condition.height),
+                              pg.SRCALPHA)
+        s.fill((*(0, 100, 103), 127))
+        scene.blit(s, self.victory_condition)
         scene.set_clip(self.victory_condition)
         scene.blit(self.victory_condition_surf,
                    (self.victory_condition.x,
