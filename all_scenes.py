@@ -358,7 +358,7 @@ class Scenarios(Scene):
                {'title':'Sky castle',
                 'heroes':['Gabriel', 'Azazel'],
                 'bonus':['gold', 'resources', 'artifact']}]
-    difficulty = ('easy', 'normal', 'hard')
+    difficulty = 0.8, 1, 1.6
     size = {'minimal':(50, 50),
             'small':(120, 120),
             'medium':(640, 640),
@@ -406,6 +406,7 @@ class Scenarios(Scene):
         self.description_scroll = 0
         self.victory_scroll = 0
         self.defeat_scroll = 0
+        self.difficulty_choose = 1
 #         self.txt_scrolling = 0
         self._build_scenarios()
         self._scenarios_info(0)
@@ -496,6 +497,15 @@ class Scenarios(Scene):
                                           (self.height_row-10,
                                            self.height_row-10))
             scene.blit(size_image, (x, self.rect_list.y + 5))
+        for i in (j := ['eazy', 'normal', 'hard']):
+            x = self.difficulty_rect.x + 25 + j.index(i) * (self.height_row + 5)
+            size_image = load_img(f'assets/difficulty_{i}.png',
+                                      (self.height_row-10,
+                                       self.height_row-10))
+            scene.blit(size_image, (x, self.difficulty_rect.y + 5))
+        difficulty_txt = self.scenarios_font.render(f'{self.difficulty[self.difficulty_choose]*100}%',
+                                                    True, (255, 255, 255))
+        scene.blit(difficulty_txt, self.difficulty_rect)
         scene.blit(self.scenarios_bg, self.rect_list)
 #         pg.draw.rect(scene, (255, 0, 0), self.picture_rect)
 #         pg.draw.rect(scene, (255, 165, 0), self.name_rect)
@@ -504,7 +514,7 @@ class Scenarios(Scene):
 #         pg.draw.rect(scene, (0, 0, 255), self.allies_rect)
 #         pg.draw.rect(scene, (75, 0, 130), self.defeat_condition)
 #         pg.draw.rect(scene, (238, 130, 238), self.victory_condition)
-        pg.draw.rect(scene, (255, 255, 255), self.difficulty_rect)
+#         pg.draw.rect(scene, (255, 255, 255), self.difficulty_rect)
         self.btn_alternative.draw(scene, self.font)
         scene.blit(self.picture_surf, self.picture_rect)
         

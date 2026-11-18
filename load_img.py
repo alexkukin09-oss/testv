@@ -10,4 +10,5 @@ def load_img(path, size=None):
         if size:
             img = pg.transform.scale(img, size)
         return img
-    return None
+    return pg.transform.scale(pg.image.load('assets/polzynok_unactivate.png').convert_alpha(),
+                              size)
