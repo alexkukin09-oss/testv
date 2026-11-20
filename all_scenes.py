@@ -89,7 +89,7 @@ class GameMenu(Scene):
                 if self.btn_new_game.collidepoint(self.mouse):
                     return 'scenarios'
                 elif self.btn_load_game.collidepoint(self.mouse):
-                    print('Load Game')
+                    pass
                     return 'load_game'
                 elif self.btn_exit.collidepoint(self.mouse):
                     return 'MainMenu'
@@ -418,7 +418,7 @@ class Scenarios(Scene):
         if self.btn_exit.is_clicked(event):
             return 'game'
         if self.btn_start.is_clicked(event):
-            print('Start')
+            pass
         if (event.type == pg.MOUSEBUTTONDOWN
             and self.rect_list.collidepoint(event.pos)
             and event.button == 1):
@@ -463,6 +463,10 @@ class Scenarios(Scene):
                                     min(self.max_defeat_condition_scroll,
                                       self.defeat_scroll-
                                       (event.y*txt_height)))
+        for btn in self.difficulty_btns:
+            if btn.is_clicked(event):
+                self.difficulty_choose = self.difficulty_btns.index(btn)
+                break
             
             
         
@@ -497,24 +501,29 @@ class Scenarios(Scene):
                                           (self.height_row-10,
                                            self.height_row-10))
             scene.blit(size_image, (x, self.rect_list.y + 5))
+        s = pg.Surface((self.difficulty_rect.width,
+                               self.difficulty_rect.height),
+                              pg.SRCALPHA)
+        s.fill((*(255, 0, 103), 127))
+        scene.blit(s, self.difficulty_rect)
+        self.difficulty_btns = []
         for i in (j := ['eazy', 'normal', 'hard']):
             x = self.difficulty_rect.x + 25 + j.index(i) * (self.height_row + 5)
-            size_image = load_img(f'assets/difficulty_{i}.png',
-                                      (self.height_row-10,
-                                       self.height_row-10))
-            scene.blit(size_image, (x, self.difficulty_rect.y + 5))
-        difficulty_txt = self.scenarios_font.render(f'{self.difficulty[self.difficulty_choose]*100}%',
+#             size_image = load_img(f'assets/difficulty_{i}.png',
+#                                       (self.height_row-10,
+#                                        self.height_row-10))
+            btn = GameButton(x, self.difficulty_rect.y + 5,
+                             self.height_row-10, self.height_row-10,
+                             f'assets/difficulty_{i}.png',
+                             f'assets/difficulty_{i}.png')
+            self.difficulty_btns.append(btn)
+            btn.draw(scene)
+#             scene.blit(size_image, (x, self.difficulty_rect.y + 5))
+        difficulty_txt = self.scenarios_font.render(f'{round(self.difficulty[self.difficulty_choose]*100)}%',
                                                     True, (255, 255, 255))
-        scene.blit(difficulty_txt, self.difficulty_rect)
+        scene.blit(difficulty_txt, (self.difficulty_rect.x + 25 + 3 * (self.height_row + 5),
+                                    self.difficulty_rect.y + 10))
         scene.blit(self.scenarios_bg, self.rect_list)
-#         pg.draw.rect(scene, (255, 0, 0), self.picture_rect)
-#         pg.draw.rect(scene, (255, 165, 0), self.name_rect)
-#         pg.draw.rect(scene, (255, 255, 0), self.description_rect)
-#         pg.draw.rect(scene, (0, 128, 0), self.enemies_rect)
-#         pg.draw.rect(scene, (0, 0, 255), self.allies_rect)
-#         pg.draw.rect(scene, (75, 0, 130), self.defeat_condition)
-#         pg.draw.rect(scene, (238, 130, 238), self.victory_condition)
-#         pg.draw.rect(scene, (255, 255, 255), self.difficulty_rect)
         self.btn_alternative.draw(scene, self.font)
         scene.blit(self.picture_surf, self.picture_rect)
         
@@ -632,7 +641,6 @@ class Scenarios(Scene):
                         lines.append(line)
                         line = i
                 lines.append(line)
-                print(lines)
             txt_surf = [self.scenarios_font.render(i,
                                                    True,
                                                    (255,

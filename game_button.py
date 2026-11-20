@@ -103,7 +103,7 @@ class GameButton:
         self.text = text
         self.activate = False
         
-    def draw(self, scene, font):
+    def draw(self, scene, font=pg.font.Font('fonts/Bahnschrift.ttf', 30)):
         if self.img:
             img = self.img_activate if self.activate else self.img
             scene.blit(img, self.rect)
